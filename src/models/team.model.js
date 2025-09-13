@@ -1,18 +1,13 @@
 import { model, Schema } from "mongoose";
 
-const UserSchema = new Schema(
+const TeamSchema = new Schema(
   {
-    username: {
+    name: {
       type: String,
       require: true,
       unique: true,
     },
-    email: {
-      type: String,
-      require: true,
-      unique: true,
-    },
-    password: {
+    description: {
       type: String,
       require: true,
     },
@@ -22,4 +17,4 @@ const UserSchema = new Schema(
   }
 );
 
-export const UserModel = model("User", UserSchema);
+export const TeamModel = model("Team", TeamSchema);
