@@ -45,11 +45,18 @@ export const updateUser = async (req, res) => {
   }
 };
 export const deletedUser = async (req, res) => {
+  const { id } = req.params;
   try {
-    const userDeleted = await UserModel.findByIdAndDelete(id);
+    const userEliminado = await UserModel.findByIdAndUpdate(
+      id,
+      {
+        isDeleted: true,
+      },
+      { new: true }
+    );
     return res
       .status(200)
-      .json({ ok: true, msg: "Usuario eliminado", userDeleted });
+      .json({ ok: true, msg: "Usuario eliminado", userEliminado });
   } catch (error) {
     return res
       .status(500)

@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 const ProfileSchema = new Schema(
   {
@@ -15,9 +15,15 @@ const ProfileSchema = new Schema(
       require: true,
     },
     address: {
-      street: String,
-      city: String,
-      country: String,
+      street: { type: String, require: true },
+      city: { type: String, require: true },
+      country: { type: String, require: true },
+    },
+    user: {
+      type: Types.ObjectId,
+      ref: "User",
+      require: true,
+      unique: true,
     },
   },
   {

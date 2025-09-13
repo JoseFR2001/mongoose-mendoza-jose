@@ -45,6 +45,7 @@ export const updateReport = async (req, res) => {
   }
 };
 export const deletedReport = async (req, res) => {
+  const { id } = req.params;
   try {
     const reportDeleted = await ReportModel.findByIdAndDelete(id);
     return res

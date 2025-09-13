@@ -45,6 +45,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 export const deletedProfile = async (req, res) => {
+  const { id } = req.params;
   try {
     const profileDeleted = await ProfileModel.findByIdAndDelete(id);
     return res
@@ -56,3 +57,22 @@ export const deletedProfile = async (req, res) => {
       .json({ ok: false, msg: "Error interno del servidor" });
   }
 };
+// export const deletedProfile = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const perfilEliminado = await ProfileModel.findByIdAndUpdate(
+//       id,
+//       {
+//         isDeleted: true,
+//       },
+//       { new: true }
+//     );
+//     return res
+//       .status(200)
+//       .json({ ok: true, msg: "Perfil eliminado", perfilEliminado });
+//   } catch (error) {
+//     return res
+//       .status(500)
+//       .json({ ok: false, msg: "Error interno del servidor" });
+//   }
+// };

@@ -45,6 +45,8 @@ export const updateTeam = async (req, res) => {
   }
 };
 export const deletedTeam = async (req, res) => {
+  const { id } = req.params;
+
   try {
     const teamDeleted = await TeamModel.findByIdAndDelete(id);
     return res
