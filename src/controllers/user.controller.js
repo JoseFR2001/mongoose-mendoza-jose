@@ -10,7 +10,7 @@ export const createUser = async (req, res) => {
       .json({ ok: false, msg: "Error interno del servidor" });
   }
 };
-export const getAllUser = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.find();
     return res.status(200).json({ ok: true, users });
