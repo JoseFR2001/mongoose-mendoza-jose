@@ -141,28 +141,4 @@ export const updateProfileValidation = [
     .withMessage("El país debe tener entre 3 y 50 caracteres")
     .isAlpha("es-ES", { ignore: " " })
     .withMessage("El país solo puede contener letras"),
-
-  body("user")
-    .optional()
-    .isMongoId()
-    .withMessage("El usuario debe ser un ID válido")
-    .custom(async (user, { req }) => {
-      const userExists = await UserModel.findOne({
-        _id: user,
-        is_deleted: false,
-      });
-      if (!userExists) {
-        throw new Error("El usuario no existe");
-      }
-
-      const existingProfile = await ProfileModel.findOne({
-        user,
-        _id: { $ne: req.params.id },
-      });
-      if (existingProfile) {
-        throw new Error("El usuario ya tiene un perfil");
-      }
-
-      return true;
-    }),
 ];

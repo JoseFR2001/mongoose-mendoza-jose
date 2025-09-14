@@ -1,8 +1,17 @@
+import { matchedData } from "express-validator";
 import { ReportModel } from "../models/report.model.js";
 
 export const createReport = async (req, res) => {
   try {
-    const newReport = await ReportModel.create(req.body);
+    const data = matchedData(req, { locations: ["body"] });
+
+    const newReport = await ReportModel.create({
+      tittle: data.tittle,
+      content: data.content,
+      author: data.author,
+      team: data.team,
+    });
+
     return res.status(201).json({ ok: true, newReport });
   } catch (error) {
     return res
@@ -38,9 +47,15 @@ export const getByIdReport = async (req, res) => {
 export const updateReport = async (req, res) => {
   const { id } = req.params;
   try {
-    const updateReport = await ReportModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const data = matchedData(req, { locations: ["body"] });
+
+    const updateReport = await ReportModel.findByIdAndUpdate(
+      id,
+      { tittle: data.tittle, content: data.content, status: data.status },
+      {
+        new: true,
+      }
+    );
     return res.status(200).json({ ok: true, updateReport });
   } catch (error) {
     return res

@@ -4,12 +4,12 @@ const ReportSchema = new Schema(
   {
     title: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     content: {
       type: String,
-      require: true,
+      required: true,
     },
     status: {
       type: String,
@@ -19,12 +19,12 @@ const ReportSchema = new Schema(
     author: {
       type: Types.ObjectId,
       ref: "User",
-      require: true,
+      required: true,
     },
     team: {
       type: Types.ObjectId,
       ref: "Team",
-      require: true,
+      required: true,
     },
   },
   {

@@ -1,8 +1,22 @@
+import { matchedData } from "express-validator";
 import { ProfileModel } from "../models/profile.model.js";
 
 export const createProfile = async (req, res) => {
   try {
-    const newProfile = await ProfileModel.create(req.body);
+    const data = matchedData(req, { locations: ["body"] });
+
+    const newProfile = await ProfileModel.create({
+      first_name: data.first_name,
+      last_name: data.last_name,
+      age: data.age,
+      address: {
+        street: data.address.street,
+        city: data.address.city,
+        country: data.address.country,
+      },
+      user: data.user,
+    });
+
     return res.status(201).json({ ok: true, newProfile });
   } catch (error) {
     return res
@@ -37,9 +51,24 @@ export const getByIdProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   const { id } = req.params;
   try {
-    const updateProfile = await ProfileModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const data = matchedData(req, { locations: ["body"] });
+
+    const updateProfile = await ProfileModel.findByIdAndUpdate(
+      id,
+      {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        age: data.age,
+        address: {
+          street: data.address.street,
+          city: data.address.city,
+          country: data.address.country,
+        },
+      },
+      {
+        new: true,
+      }
+    );
     return res.status(200).json({ ok: true, updateProfile });
   } catch (error) {
     return res

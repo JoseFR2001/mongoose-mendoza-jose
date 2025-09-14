@@ -4,25 +4,25 @@ const ProfileSchema = new Schema(
   {
     first_name: {
       type: String,
-      require: true,
+      required: true,
     },
     last_name: {
       type: String,
-      require: true,
+      required: true,
     },
     age: {
       type: Number,
-      require: true,
+      required: true,
     },
     address: {
-      street: { type: String, require: true },
-      city: { type: String, require: true },
-      country: { type: String, require: true },
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      country: { type: String, required: true },
     },
     user: {
       type: Types.ObjectId,
       ref: "User",
-      require: true,
+      required: true,
       unique: true,
     },
   },

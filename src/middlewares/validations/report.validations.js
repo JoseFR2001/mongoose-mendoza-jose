@@ -1,4 +1,3 @@
-// reportValidators.js
 import { body, param } from "express-validator";
 import { ReportModel } from "../../models/report.model.js";
 import { UserModel } from "../../models/user.model.js";
@@ -105,31 +104,4 @@ export const updateReportValidation = [
     .optional()
     .isIn(["pending", "in-process", "completed"])
     .withMessage("El estado debe ser: pending, in-process o completed"),
-
-  body("author")
-    .optional()
-    .isMongoId()
-    .withMessage("El autor debe ser un ID válido")
-    .custom(async (author) => {
-      const user = await UserModel.findOne({
-        _id: author,
-        is_deleted: false,
-      });
-      if (!user) {
-        throw new Error("El autor no existe");
-      }
-      return true;
-    }),
-
-  body("team")
-    .optional()
-    .isMongoId()
-    .withMessage("El equipo debe ser un ID válido")
-    .custom(async (team) => {
-      const teamExists = await TeamModel.findById(team);
-      if (!teamExists) {
-        throw new Error("El equipo no existe");
-      }
-      return true;
-    }),
 ];

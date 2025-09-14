@@ -1,8 +1,13 @@
+import { matchedData } from "express-validator";
 import { TeamModel } from "../models/team.model.js";
 
 export const createTeam = async (req, res) => {
   try {
-    const newTeam = await TeamModel.create(req.body);
+    const data = matchedData(req, { locations: ["body"] });
+    const newTeam = await TeamModel.create({
+      name: data.name,
+      description: data.description,
+    });
     return res.status(201).json({ ok: true, newTeam });
   } catch (error) {
     return res
@@ -38,9 +43,18 @@ export const getByIdTeam = async (req, res) => {
 export const updateTeam = async (req, res) => {
   const { id } = req.params;
   try {
-    const updateTeam = await TeamModel.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
+    const data = matchedData(req, { locations: ["body"] });
+
+    const updateTeam = await TeamModel.findByIdAndUpdate(
+      id,
+      {
+        name: data.name,
+        description: data.description,
+      },
+      {
+        new: true,
+      }
+    );
     return res.status(200).json({ ok: true, updateTeam });
   } catch (error) {
     return res

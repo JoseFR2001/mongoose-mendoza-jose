@@ -1,9 +1,25 @@
+import { matchedData } from "express-validator";
 import { UserModel } from "../models/user.model.js";
 
 export const createUser = async (req, res) => {
   try {
-    const newUser = await UserModel.create(req.body);
-    return res.status(201).json({ ok: true, newUser });
+    const data = matchedData(req, { locations: ["body"] });
+
+    const newUser = await UserModel.create({
+      username: data.username,
+      email: data.email,
+      password: data.password,
+    });
+
+    return res.status(201).json({
+      ok: true,
+      msg: "Usuario creado exitosamente",
+      user: {
+        _id: newUser._id,
+        username: newUser.username,
+        email: newUser.email,
+      },
+    });
   } catch (error) {
     return res
       .status(500)
@@ -42,10 +58,27 @@ export const getByIdUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const updateUser = await UserModel.findByIdAndUpdate(id, req.body, {
-      new: true,
+    const data = matchedData(req, { locations: ["body"] });
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      {
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      },
+      { new: true }
+    ).select("-password");
+
+    return res.status(200).json({
+      ok: true,
+      msg: "Usuario actualizado exitosamente",
+      user: {
+        _id: updatedUser._id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+      },
     });
-    return res.status(200).json({ ok: true, updateUser });
   } catch (error) {
     return res
       .status(500)

@@ -5,18 +5,17 @@ const TeamSchema = new Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
       unique: true,
     },
     description: {
       type: String,
-      require: true,
+      required: true,
     },
     members: [
       {
         type: Types.ObjectId,
         ref: "User",
-        require: true,
       },
     ],
   },
