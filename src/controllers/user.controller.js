@@ -12,7 +12,11 @@ export const createUser = async (req, res) => {
 };
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find({ is_deleted: false })
+      .populate("teams", "name")
+      .populate("profile", "-_id -user")
+      .populate("report", "title status")
+      .select("-password");
     return res.status(200).json({ ok: true, users });
   } catch (error) {
     return res
@@ -23,7 +27,11 @@ export const getAllUsers = async (req, res) => {
 export const getByIdUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id)
+      .populate("teams", "name")
+      .populate("profile", "-_id -user")
+      .populate("report", "title status")
+      .select("-password");
     return res.status(200).json({ ok: true, user });
   } catch (error) {
     return res
@@ -50,7 +58,8 @@ export const deletedUser = async (req, res) => {
     const userEliminado = await UserModel.findByIdAndUpdate(
       id,
       {
-        isDeleted: true,
+        is_deleted: true,
+        deleted_at: new Date(),
       },
       { new: true }
     );

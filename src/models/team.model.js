@@ -1,5 +1,5 @@
 import { model, Schema, Types } from "mongoose";
-import { ReportModel } from "./report.model";
+import { ReportModel } from "./report.model.js";
 
 const TeamSchema = new Schema(
   {
@@ -27,7 +27,7 @@ const TeamSchema = new Schema(
   }
 );
 
-TeamSchema.virtual("Report", {
+TeamSchema.virtual("report", {
   ref: "Report",
   localField: "_id",
   foreignField: "Team",

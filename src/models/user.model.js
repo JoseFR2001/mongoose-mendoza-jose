@@ -19,17 +19,18 @@ const UserSchema = new Schema(
       type: String,
       require: true,
     },
-    team: [
+    teams: [
       {
         type: Types.ObjectId,
         ref: "Team",
       },
     ],
 
-    isDeleted: {
+    is_deleted: {
       type: Boolean,
       default: false,
     },
+    deleted_at: { type: Date, default: null },
   },
   {
     toJSON: { virtuals: true },
@@ -38,20 +39,21 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.virtual("Profile", {
+UserSchema.virtual("profile", {
   ref: "Profile",
   localField: "_id",
   foreignField: "user",
+  justOne: true,
 });
 
-UserSchema.virtual("Report", {
+UserSchema.virtual("report", {
   ref: "Report",
   localField: "_id",
   foreignField: "author",
 });
 
 UserSchema.pre("findOneAndUpdate", async function (next) {
-  if (this.getUpdate().isDeleted === true) {
+  if (this.getUpdate().is_deleted === true) {
     const user_id = this.getQuery()._id;
     await ReportModel.deleteMany({ author: user_id });
     await ProfileModel.deleteOne({ user: user_id });

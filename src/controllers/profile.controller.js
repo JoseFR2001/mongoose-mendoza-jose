@@ -12,7 +12,7 @@ export const createProfile = async (req, res) => {
 };
 export const getAllProfiles = async (req, res) => {
   try {
-    const profiles = await ProfileModel.find();
+    const profiles = await ProfileModel.find().populate("user", "-password");
     return res.status(200).json({ ok: true, profiles });
   } catch (error) {
     return res
@@ -23,7 +23,10 @@ export const getAllProfiles = async (req, res) => {
 export const getByIdProfile = async (req, res) => {
   const { id } = req.params;
   try {
-    const profile = await ProfileModel.findById(id);
+    const profile = await ProfileModel.findById(id).populate(
+      "user",
+      "-password"
+    );
     return res.status(200).json({ ok: true, profile });
   } catch (error) {
     return res
@@ -57,22 +60,3 @@ export const deletedProfile = async (req, res) => {
       .json({ ok: false, msg: "Error interno del servidor" });
   }
 };
-// export const deletedProfile = async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const perfilEliminado = await ProfileModel.findByIdAndUpdate(
-//       id,
-//       {
-//         isDeleted: true,
-//       },
-//       { new: true }
-//     );
-//     return res
-//       .status(200)
-//       .json({ ok: true, msg: "Perfil eliminado", perfilEliminado });
-//   } catch (error) {
-//     return res
-//       .status(500)
-//       .json({ ok: false, msg: "Error interno del servidor" });
-//   }
-// };

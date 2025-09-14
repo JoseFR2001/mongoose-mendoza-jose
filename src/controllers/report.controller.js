@@ -12,7 +12,9 @@ export const createReport = async (req, res) => {
 };
 export const getAllReports = async (req, res) => {
   try {
-    const reports = await ReportModel.find();
+    const reports = await ReportModel.find()
+      .populate("author", "-password")
+      .populate("team", "name");
     return res.status(200).json({ ok: true, reports });
   } catch (error) {
     return res
@@ -23,7 +25,9 @@ export const getAllReports = async (req, res) => {
 export const getByIdReport = async (req, res) => {
   const { id } = req.params;
   try {
-    const report = await ReportModel.findById(id);
+    const report = await ReportModel.findById(id)
+      .populate("author", "-password")
+      .populate("team", "name");
     return res.status(200).json({ ok: true, report });
   } catch (error) {
     return res
