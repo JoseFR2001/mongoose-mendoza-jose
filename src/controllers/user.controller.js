@@ -29,7 +29,40 @@ export const getAllUsers = async (req, res) => {
   try {
     const users = await UserModel.find({ is_deleted: false })
       .populate("teams", "name")
-      .populate("profile", "-_id -user")
+      .populate("profile")
+      .lean()
+      .populate("report", "title status")
+      .select("username email teams profile report");
+    return res.status(200).json({ ok: true, users });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ ok: false, msg: "Error interno del servidor" });
+  }
+};
+export const getByIdUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await UserModel.findById(id)
+      .populate("teams", "name")
+      .populate("profile")
+      .lean()
+      .populate("report", "title status")
+      .select("username email teams profile report");
+    return res.status(200).json({ ok: true, user });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ ok: false, msg: "Error interno del servidor" });
+  }
+};
+
+export const getAllUsersDeleted = async (req, res) => {
+  try {
+    const users = await UserModel.find({ is_deleted: true })
+      .populate("teams", "name")
+      .populate("profile")
+      .lean()
       .populate("report", "title status")
       .select("-password");
     return res.status(200).json({ ok: true, users });
@@ -39,7 +72,8 @@ export const getAllUsers = async (req, res) => {
       .json({ ok: false, msg: "Error interno del servidor" });
   }
 };
-export const getByIdUser = async (req, res) => {
+
+export const getByIdUserDeleted = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await UserModel.findById(id)
@@ -54,6 +88,7 @@ export const getByIdUser = async (req, res) => {
       .json({ ok: false, msg: "Error interno del servidor" });
   }
 };
+
 export const updateUser = async (req, res) => {
   const { id } = req.params;
   try {
@@ -111,6 +146,27 @@ export const deletedUser = async (req, res) => {
     return res
       .status(200)
       .json({ ok: true, msg: "Usuario eliminado", userEliminado });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ ok: false, msg: "Error interno del servidor" });
+  }
+};
+
+export const activateUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userEliminado = await UserModel.findByIdAndUpdate(
+      id,
+      {
+        is_deleted: false,
+        deleted_at: null,
+      },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ ok: true, msg: "Se dio de alta al asuario", userEliminado });
   } catch (error) {
     return res
       .status(500)

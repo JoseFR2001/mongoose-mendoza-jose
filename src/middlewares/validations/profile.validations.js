@@ -141,4 +141,9 @@ export const updateProfileValidation = [
     .withMessage("El país debe tener entre 3 y 50 caracteres")
     .isAlpha("es-ES", { ignore: " " })
     .withMessage("El país solo puede contener letras"),
+
+  body("user")
+    .not()
+    .exists()
+    .withMessage("Este campo ya no se puede modificar"),
 ];

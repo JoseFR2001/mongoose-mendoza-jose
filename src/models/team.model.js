@@ -29,7 +29,7 @@ const TeamSchema = new Schema(
 TeamSchema.virtual("report", {
   ref: "Report",
   localField: "_id",
-  foreignField: "Team",
+  foreignField: "team",
 });
 
 TeamSchema.pre("findOneAndDelete", async function (next) {

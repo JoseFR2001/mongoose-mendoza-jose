@@ -14,6 +14,19 @@ export const idUserValidator = [
     }),
 ];
 
+export const idAltaUserValidator = [
+  param("id")
+    .isMongoId()
+    .withMessage("El id no tiene el formato valido")
+    .custom(async (id) => {
+      const idUser = await UserModel.findOne({ _id: id, is_deleted: true });
+      if (!idUser) {
+        throw new Error("El usuario no existe o esta activo");
+      }
+      return true;
+    }),
+];
+
 export const createUserValidation = [
   body("username")
     .trim()
@@ -25,8 +38,6 @@ export const createUserValidation = [
     )
     .isLength({ min: 3, max: 100 })
     .withMessage("E username debe tener minimo 3 carcateres y maximo 100")
-    .isString()
-    .withMessage("El username debe ser un String")
     .custom(async (username) => {
       const user = await UserModel.findOne({ username });
       if (user) {

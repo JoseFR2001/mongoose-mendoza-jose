@@ -26,7 +26,9 @@ export const createProfile = async (req, res) => {
 };
 export const getAllProfiles = async (req, res) => {
   try {
-    const profiles = await ProfileModel.find().populate("user", "-password");
+    const profiles = await ProfileModel.find()
+      .populate("user", "username email")
+      .lean();
     return res.status(200).json({ ok: true, profiles });
   } catch (error) {
     return res
@@ -37,10 +39,9 @@ export const getAllProfiles = async (req, res) => {
 export const getByIdProfile = async (req, res) => {
   const { id } = req.params;
   try {
-    const profile = await ProfileModel.findById(id).populate(
-      "user",
-      "-password"
-    );
+    const profile = await ProfileModel.findById(id)
+      .populate("user", "username email")
+      .lean();
     return res.status(200).json({ ok: true, profile });
   } catch (error) {
     return res

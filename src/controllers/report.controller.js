@@ -6,7 +6,7 @@ export const createReport = async (req, res) => {
     const data = matchedData(req, { locations: ["body"] });
 
     const newReport = await ReportModel.create({
-      tittle: data.tittle,
+      title: data.title,
       content: data.content,
       author: data.author,
       team: data.team,
@@ -14,6 +14,7 @@ export const createReport = async (req, res) => {
 
     return res.status(201).json({ ok: true, newReport });
   } catch (error) {
+    console.log(error);
     return res
       .status(500)
       .json({ ok: false, msg: "Error interno del servidor" });
@@ -22,7 +23,7 @@ export const createReport = async (req, res) => {
 export const getAllReports = async (req, res) => {
   try {
     const reports = await ReportModel.find()
-      .populate("author", "-password")
+      .populate("author", "username email")
       .populate("team", "name");
     return res.status(200).json({ ok: true, reports });
   } catch (error) {
@@ -35,7 +36,7 @@ export const getByIdReport = async (req, res) => {
   const { id } = req.params;
   try {
     const report = await ReportModel.findById(id)
-      .populate("author", "-password")
+      .populate("author", "username email")
       .populate("team", "name");
     return res.status(200).json({ ok: true, report });
   } catch (error) {
@@ -51,7 +52,7 @@ export const updateReport = async (req, res) => {
 
     const updateReport = await ReportModel.findByIdAndUpdate(
       id,
-      { tittle: data.tittle, content: data.content, status: data.status },
+      { title: data.title, content: data.content, status: data.status },
       {
         new: true,
       }

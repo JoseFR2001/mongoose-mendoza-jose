@@ -64,10 +64,15 @@ export const createReportValidation = [
     .withMessage("El equipo es obligatorio")
     .isMongoId()
     .withMessage("El equipo debe ser un ID válido")
-    .custom(async (team) => {
+    .custom(async (team, { req }) => {
       const teamExists = await TeamModel.findById(team);
       if (!teamExists) {
         throw new Error("El equipo no existe");
+      }
+      const user_id = req.body.author;
+      const user = await UserModel.findById(user_id);
+      if (!user.teams.includes(team)) {
+        throw new Error("El usuario no pertenece a este equipo");
       }
       return true;
     }),

@@ -18,8 +18,8 @@ export const createTeam = async (req, res) => {
 export const getAllTeams = async (req, res) => {
   try {
     const teams = await TeamModel.find()
-      .populate("members", "-password")
-      .populate("report", "title status");
+      .populate("members", "username email")
+      .populate("report", "title status author");
     return res.status(200).json({ ok: true, teams });
   } catch (error) {
     return res
@@ -31,8 +31,8 @@ export const getByIdTeam = async (req, res) => {
   const { id } = req.params;
   try {
     const team = await TeamModel.findById(id)
-      .populate("members", "-password")
-      .populate("report", "title status");
+      .populate("members", "username email")
+      .populate("report", "title status author");
     return res.status(200).json({ ok: true, team });
   } catch (error) {
     return res

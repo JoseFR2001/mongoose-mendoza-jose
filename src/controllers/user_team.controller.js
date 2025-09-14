@@ -1,16 +1,18 @@
+import { matchedData } from "express-validator";
 import { TeamModel } from "../models/team.model.js";
 import { UserModel } from "../models/user.model.js";
 
 export const addUserToTeam = async (req, res) => {
-  const { user_id, team_id } = req.params;
   try {
-    await TeamModel.findByIdAndUpdate(team_id, {
-      $addToSet: { members: user_id },
-    });
-    await UserModel.findByIdAndUpdate(user_id, {
-      $addToSet: { teams: team_id },
+    const data = matchedData(req, { locations: ["body"] });
+
+    await UserModel.findByIdAndUpdate(data.user_id, {
+      $addToSet: { teams: data.team_id },
     });
 
+    await TeamModel.findByIdAndUpdate(data.team_id, {
+      $addToSet: { members: data.user_id },
+    });
     return res.status(200).json({
       ok: true,
       msg: "Se añadido al usuario al team exitosamente",
@@ -25,11 +27,15 @@ export const addUserToTeam = async (req, res) => {
 
 export const removeUserFromTeam = async (req, res) => {
   try {
-    const { team_id, user_id } = req.params;
+    const data = matchedData(req, { locations: ["body"] });
 
-    await TeamModel.findByIdAndUpdate(team_id, { $pull: { members: user_id } });
+    await TeamModel.findByIdAndUpdate(data.team_id, {
+      $pull: { members: data.user_id },
+    });
 
-    await UserModel.findByIdAndUpdate(user_id, { $pull: { teams: team_id } });
+    await UserModel.findByIdAndUpdate(data.user_id, {
+      $pull: { teams: data.team_id },
+    });
 
     return res.status(200).json({
       ok: true,
