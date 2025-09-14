@@ -1,24 +1,23 @@
 import { matchedData } from "express-validator";
 import { UserModel } from "../models/user.model.js";
+import { hashPassword } from "../helpers/bcrypt.helper.js";
 
 export const createUser = async (req, res) => {
   try {
     const data = matchedData(req, { locations: ["body"] });
 
+    const password = await hashPassword(data.password);
+
     const newUser = await UserModel.create({
       username: data.username,
       email: data.email,
-      password: data.password,
+      password: password,
     });
 
     return res.status(201).json({
       ok: true,
       msg: "Usuario creado exitosamente",
-      user: {
-        _id: newUser._id,
-        username: newUser.username,
-        email: newUser.email,
-      },
+      newUser,
     });
   } catch (error) {
     return res
@@ -60,24 +59,37 @@ export const updateUser = async (req, res) => {
   try {
     const data = matchedData(req, { locations: ["body"] });
 
-    const updatedUser = await UserModel.findByIdAndUpdate(
+    if (data.password) {
+      const password = await hashPassword(data.password);
+
+      const usuarioActualizado = await UserModel.findByIdAndUpdate(
+        id,
+        {
+          username: data.username,
+          email: data.email,
+          password: password,
+        },
+        { new: true }
+      );
+      return res.status(200).json({
+        ok: true,
+        msg: "Usuario actualizado exitosamente",
+        usuarioActualizado,
+      });
+    }
+
+    const usuarioActualizado = await UserModel.findByIdAndUpdate(
       id,
       {
         username: data.username,
         email: data.email,
-        password: data.password,
       },
       { new: true }
-    ).select("-password");
-
+    );
     return res.status(200).json({
       ok: true,
       msg: "Usuario actualizado exitosamente",
-      user: {
-        _id: updatedUser._id,
-        username: updatedUser.username,
-        email: updatedUser.email,
-      },
+      usuarioActualizado,
     });
   } catch (error) {
     return res
