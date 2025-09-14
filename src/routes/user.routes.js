@@ -19,7 +19,7 @@ userRoutes.post("/user", createUserValidation, applyValidations, createUser);
 
 userRoutes.get("/user", getAllUsers);
 
-userRoutes.get("/user/:id", getByIdUser);
+userRoutes.get("/user/:id", idUserValidator, applyValidations, getByIdUser);
 
 userRoutes.put(
   "/user/:id",
@@ -29,6 +29,6 @@ userRoutes.put(
   updateUser
 );
 
-userRoutes.delete("/user/:id", deletedUser);
+userRoutes.delete("/user/:id", idUserValidator, applyValidations, deletedUser);
 
 export default userRoutes;
